@@ -39,10 +39,10 @@ export class UpdateJobSeekerDto {
   @IsOptional()
   address?: string;
 
-  @ApiPropertyOptional({ example: 1, description: 'Location ID (City/Country)' })
+  @ApiPropertyOptional({ example: 1, description: 'City ID' })
   @IsInt()
   @IsOptional()
-  locationId?: number;
+  cityId?: number;
 
   @ApiPropertyOptional({ example: 'https://myportfolio.com', description: 'Portfolio URL' })
   @IsUrl()

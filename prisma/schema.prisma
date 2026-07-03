@@ -137,8 +137,8 @@ model JobSeeker {
   phone      String?   @db.VarChar(20)
   avatarUrl  String?   @map("avatar_url") @db.VarChar(255)
   address    String?   @db.Text
-  locationId Int?      @map("location_id")
-  location   Location? @relation(fields: [locationId], references: [id], onDelete: SetNull)
+  cityId     Int?      @map("city_id")
+  city       City?     @relation(fields: [cityId], references: [id], onDelete: SetNull)
   dateOfBirth DateTime? @map("date_of_birth") @db.Date
   gender     Gender?
   portfolioUrl String?  @map("portfolio_url") @db.VarChar(255)
@@ -254,8 +254,8 @@ model Employer {
   logoUrl            String?            @map("logo_url") @db.VarChar(255)
   phone              String?            @db.VarChar(20)
   address            String?            @db.Text
-  locationId         Int?               @map("location_id")
-  location           Location?          @relation(fields: [locationId], references: [id], onDelete: SetNull)
+  cityId             Int?               @map("city_id")
+  city               City?              @relation(fields: [cityId], references: [id], onDelete: SetNull)
   employeeSize       String?            @map("employee_size") @db.VarChar(50)
   industryId         Int?               @map("industry_id")
   industry           Industry?          @relation(fields: [industryId], references: [id], onDelete: SetNull)
@@ -278,12 +278,13 @@ model JobVacancy {
   employer       Employer       @relation(fields: [employerId], references: [id], onDelete: Cascade)
   subCategories  SubCategory[]
   title          String         @db.VarChar(150)
-  locationId     Int            @map("location_id")
-  location       Location       @relation(fields: [locationId], references: [id], onDelete: Restrict)
+  cityId         Int            @map("city_id")
+  city           City           @relation(fields: [cityId], references: [id], onDelete: Restrict)
   description    String         @db.Text
   requirements   String         @db.Text
   salaryMin      Decimal?       @map("salary_min") @db.Decimal(15, 2)
   salaryMax      Decimal?       @map("salary_max") @db.Decimal(15, 2)
+  salaryCurrency String?        @map("salary_currency") @db.VarChar(3)
   employmentType EmploymentType @map("employment_type")
   status         VacancyStatus  @default(DRAFT)
   isPremium      Boolean        @default(false) @map("is_premium")
@@ -354,16 +355,32 @@ model SavedJob {
   @@map("saved_jobs")
 }
 
-model Location {
+model Country {
+  id             Int      @id @default(autoincrement())
+  name           String   @unique @db.VarChar(150)
+  isoAlpha2      String   @unique @map("iso_alpha2") @db.VarChar(2)
+  isoAlpha3      String   @unique @map("iso_alpha3") @db.VarChar(3)
+  currencyCode   String   @map("currency_code") @db.VarChar(3)
+  currencySymbol String   @map("currency_symbol") @db.VarChar(10)
+  phoneCode      String   @map("phone_code") @db.VarChar(10)
+  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  cities         City[]
+
+  @@map("countries")
+}
+
+model City {
   id        Int      @id @default(autoincrement())
-  city      String   @db.VarChar(150)
-  country   String   @db.VarChar(150)
+  name      String   @db.VarChar(150)
+  countryId Int      @map("country_id")
+  country   Country  @relation(fields: [countryId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
 
   jobSeekers JobSeeker[]
   vacancies  JobVacancy[]
   employers  Employer[]
 
-  @@unique([city, country], name: "unique_city_country")
-  @@map("locations")
+  @@unique([name, countryId], name: "unique_city_country")
+  @@map("cities")
 }

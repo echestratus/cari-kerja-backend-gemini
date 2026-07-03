@@ -19,7 +19,8 @@ async function main() {
   await prisma.category.deleteMany();
   await prisma.industry.deleteMany();
   await prisma.category.deleteMany();
-  await prisma.location.deleteMany();
+  await prisma.city.deleteMany();
+  await prisma.country.deleteMany();
   await prisma.education.deleteMany();
   await prisma.experience.deleteMany();
   await prisma.skill.deleteMany();
@@ -91,12 +92,28 @@ async function main() {
   }
   console.log(`Created categories and ${subCategories.length} subcategories`);
 
-  // 1b. Locations
-  const cityNames = ['Jakarta', 'Bandung', 'Surabaya', 'Yogyakarta', 'Medan', 'Bali', 'Semarang', 'Makassar'];
-  const locations = await Promise.all(
-    cityNames.map(city => prisma.location.create({ data: { city, country: 'Indonesia' } }))
-  );
-  console.log(`Created ${locations.length} locations`);
+  // 1b. Countries & Cities
+  const countryData = [
+    { name: 'Indonesia', isoAlpha2: 'ID', isoAlpha3: 'IDN', currencyCode: 'IDR', currencySymbol: 'Rp', phoneCode: '+62', cities: ['Jakarta', 'Bandung', 'Surabaya', 'Yogyakarta', 'Medan', 'Bali', 'Semarang', 'Makassar'] },
+    { name: 'Singapore', isoAlpha2: 'SG', isoAlpha3: 'SGP', currencyCode: 'SGD', currencySymbol: '$', phoneCode: '+65', cities: ['Singapore'] },
+    { name: 'Malaysia', isoAlpha2: 'MY', isoAlpha3: 'MYS', currencyCode: 'MYR', currencySymbol: 'RM', phoneCode: '+60', cities: ['Kuala Lumpur', 'Penang', 'Johor Bahru'] },
+    { name: 'United States', isoAlpha2: 'US', isoAlpha3: 'USA', currencyCode: 'USD', currencySymbol: '$', phoneCode: '+1', cities: ['New York', 'San Francisco', 'Austin', 'Seattle'] },
+    { name: 'Australia', isoAlpha2: 'AU', isoAlpha3: 'AUS', currencyCode: 'AUD', currencySymbol: '$', phoneCode: '+61', cities: ['Sydney', 'Melbourne', 'Brisbane'] },
+  ];
+
+  const allCities: any[] = [];
+  for (const c of countryData) {
+    const country = await prisma.country.create({
+      data: {
+        name: c.name, isoAlpha2: c.isoAlpha2, isoAlpha3: c.isoAlpha3, currencyCode: c.currencyCode, currencySymbol: c.currencySymbol, phoneCode: c.phoneCode
+      }
+    });
+    for (const cityName of c.cities) {
+      const city = await prisma.city.create({ data: { name: cityName, countryId: country.id } });
+      allCities.push(city);
+    }
+  }
+  console.log(`Created ${countryData.length} countries and ${allCities.length} cities`);
 
   // 1c. Industries
   const industryNames = [
@@ -156,7 +173,7 @@ async function main() {
             logoUrl: `https://ui-avatars.com/api/?name=${companyName.replace(/ /g, '+')}&background=0D8ABC&color=fff&size=256`,
             phone: `+6281100000${i < 10 ? '0' + i : i}`,
             address: `Jl. Jend. Sudirman Kav. ${i}, Tower ${i}`,
-            locationId: locations[i % locations.length].id,
+            cityId: allCities[i % allCities.length].id,
             employeeSize: employeeSizes[i % employeeSizes.length],
             industryId: industries[i % industries.length].id,
             verificationStatus: i <= 8 ? 'APPROVED' : 'PENDING',
@@ -186,7 +203,7 @@ async function main() {
             fullName,
             phone: `+62812000000${i < 10 ? '0'+i : i}`,
             avatarUrl: `https://api.dicebear.com/7.x/avataaars/svg?seed=Seeker${i}&backgroundColor=b6e3f4`,
-            locationId: locations[i % locations.length].id,
+            cityId: allCities[i % allCities.length].id,
             address: `Jl. Sudirman No. ${i}, Blok A`,
             dateOfBirth: new Date(1990 + (i % 15), i % 12, (i % 28) + 1),
             gender: i % 2 === 0 ? Gender.MALE : Gender.FEMALE,
@@ -269,7 +286,7 @@ async function main() {
     const randomEmployer = employers[i % employers.length];
     const randomSubCat = subCategories[i % subCategories.length];
     const eType = employmentTypes[i % employmentTypes.length];
-    const randomLocation = locations[i % locations.length];
+    const randomCity = allCities[i % allCities.length];
     
     await prisma.jobVacancy.create({
       data: {
@@ -278,11 +295,12 @@ async function main() {
           connect: [{ id: randomSubCat.id }]
         },
         title: `${['Senior', 'Junior', 'Lead', 'Staff'][i % 4]} ${randomSubCat.name} Engineer ${i}`,
-        locationId: randomLocation.id,
+        cityId: randomCity.id,
         description: `We are looking for a highly skilled individual to join our team. Role #${i}.`,
         requirements: `Experience in ${randomSubCat.name}. Strong communication skills.`,
         salaryMin: 8000000 + (i * 100000),
         salaryMax: 15000000 + (i * 100000),
+        salaryCurrency: 'IDR',
         employmentType: eType,
         status: VacancyStatus.ACTIVE,
         isPremium: i % 10 === 0 // Every 10th job is premium

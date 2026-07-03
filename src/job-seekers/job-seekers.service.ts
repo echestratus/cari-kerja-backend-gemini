@@ -12,7 +12,7 @@ export class JobSeekersService {
 
   async findAll() {
     return this.prisma.jobSeeker.findMany({
-      include: { location: true, user: { select: { email: true } } },
+      include: { city: { include: { country: true } }, user: { select: { email: true } } },
       orderBy: { createdAt: 'desc' }
     });
   }
@@ -21,7 +21,7 @@ export class JobSeekersService {
     const seeker = await this.prisma.jobSeeker.findUnique({
       where: { id },
       include: { 
-        location: true, 
+        city: { include: { country: true } }, 
         user: { select: { email: true } },
         resumes: {
           where: { isSearchable: true },
@@ -40,7 +40,7 @@ export class JobSeekersService {
     return this.prisma.jobSeeker.update({
       where: { userId },
       data: updateDto,
-      include: { location: true }
+      include: { city: { include: { country: true } } }
     });
   }
 

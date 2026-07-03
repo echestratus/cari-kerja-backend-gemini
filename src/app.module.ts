@@ -18,11 +18,13 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { CategoryModule } from './category/category.module';
 import { ResumeModule } from './resume/resume.module';
 import { SavedJobModule } from './saved-job/saved-job.module';
-import { LocationModule } from './location/location.module';
+
 import { IndustryModule } from './industry/industry.module';
 import { EmployersModule } from './employers/employers.module';
 import { JobSeekersModule } from './job-seekers/job-seekers.module';
 import { SkillsModule } from './skills/skills.module';
+import { CountryModule } from './country/country.module';
+import { CityModule } from './city/city.module';
 
 @Module({
   imports: [
@@ -48,7 +50,6 @@ import { SkillsModule } from './skills/skills.module';
       },
     }),
     SavedJobModule,
-    LocationModule,
     IndustryModule,
     EmployersModule,
     JobSeekersModule,
@@ -57,6 +58,8 @@ import { SkillsModule } from './skills/skills.module';
       rootPath: join(__dirname, '..', 'uploads'),
       serveRoot: '/uploads',
     }),
+    CountryModule,
+    CityModule,
   ],
   controllers: [AppController],
   providers: [AppService],
