@@ -44,7 +44,7 @@ export class VacancyService {
   }
 
   async findAll(query: GetVacanciesDto) {
-    const { page = 1, limit = 10, search, locationId, subCategoryIds, employmentType, status, isPremium, sortBy = 'createdAt', sortOrder = 'desc' } = query;
+    const { page = 1, limit = 10, search, cityId, countryId, subCategoryIds, employmentType, status, isPremium, sortBy = 'createdAt', sortOrder = 'desc' } = query;
     const skip = (page - 1) * limit;
 
     const where: Prisma.JobVacancyWhereInput = {};
@@ -63,8 +63,14 @@ export class VacancyService {
       };
     }
 
-    if (query.locationId) {
-      where.locationId = query.locationId;
+    if (cityId) {
+      where.cityId = cityId;
+    }
+
+    if (countryId) {
+      where.city = {
+        countryId: countryId
+      };
     }
 
     if (employmentType && employmentType.length > 0) {
@@ -79,8 +85,8 @@ export class VacancyService {
       where.OR = [
         { title: { contains: search, mode: 'insensitive' } },
         { description: { contains: search, mode: 'insensitive' } },
-        { location: { city: { contains: search, mode: 'insensitive' } } },
-        { location: { country: { contains: search, mode: 'insensitive' } } },
+        { city: { name: { contains: search, mode: 'insensitive' } } },
+        { city: { country: { name: { contains: search, mode: 'insensitive' } } } },
         { employer: { companyName: { contains: search, mode: 'insensitive' } } }
       ];
     }
@@ -103,7 +109,7 @@ export class VacancyService {
           subCategories: {
             select: { id: true, name: true, categoryId: true }
           },
-          location: true
+          city: { include: { country: true } }
         }
       }),
       this.prisma.jobVacancy.count({ where })
@@ -122,7 +128,7 @@ export class VacancyService {
   async findOne(id: string) {
     const vacancy = await this.prisma.jobVacancy.findUnique({
       where: { id },
-      include: { employer: true, subCategories: true, location: true }
+      include: { employer: true, subCategories: true, city: { include: { country: true } } }
     });
 
     if (!vacancy) throw new NotFoundException('Vacancy not found');

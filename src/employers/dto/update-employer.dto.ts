@@ -32,10 +32,10 @@ export class UpdateEmployerDto {
   @IsOptional()
   address?: string;
 
-  @ApiPropertyOptional({ example: 1, description: 'ID of the location' })
+  @ApiPropertyOptional({ example: 1, description: 'City ID' })
   @IsInt()
   @IsOptional()
-  locationId?: number;
+  cityId?: number;
 
   @ApiPropertyOptional({ example: '51-200', description: 'Employee size range' })
   @IsString()

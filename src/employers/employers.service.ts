@@ -11,7 +11,7 @@ export class EmployersService {
   async findAll() {
     return this.prisma.employer.findMany({
       where: { verificationStatus: 'APPROVED' },
-      include: { location: true, industry: true, user: { select: { email: true } } },
+      include: { city: { include: { country: true } }, industry: true, user: { select: { email: true } } },
       orderBy: { createdAt: 'desc' }
     });
   }
@@ -20,12 +20,12 @@ export class EmployersService {
     const employer = await this.prisma.employer.findUnique({
       where: { id },
       include: { 
-        location: true, 
+        city: { include: { country: true } }, 
         industry: true, 
         user: { select: { email: true } },
         jobVacancies: {
           where: { status: 'ACTIVE' },
-          include: { location: true, subCategories: true }
+          include: { city: { include: { country: true } }, subCategories: true }
         }
       }
     });
@@ -40,7 +40,7 @@ export class EmployersService {
     return this.prisma.employer.update({
       where: { userId },
       data: updateDto,
-      include: { location: true, industry: true }
+      include: { city: { include: { country: true } }, industry: true }
     });
   }
 }

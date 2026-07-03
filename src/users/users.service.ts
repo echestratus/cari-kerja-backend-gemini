@@ -24,7 +24,7 @@ export class UsersService {
         isVerified: true,
         jobSeeker: {
           select: { 
-            fullName: true, phone: true, avatarUrl: true, address: true, locationId: true,
+            fullName: true, phone: true, avatarUrl: true, address: true, city: { include: { country: true } },
             dateOfBirth: true, gender: true, portfolioUrl: true, linkedInUrl: true,
             willingToRelocate: true, maritalStatus: true, taxId: true, dependents: true,
             nationality: true,
@@ -38,7 +38,7 @@ export class UsersService {
           }
         },
         employer: {
-          select: { companyName: true, companyDescription: true, website: true, logoUrl: true, phone: true, address: true, location: true, employeeSize: true, industry: true, verificationStatus: true, jobPostingQuota: true, resumeViewQuota: true }
+          select: { companyName: true, companyDescription: true, website: true, logoUrl: true, phone: true, address: true, city: { include: { country: true } }, employeeSize: true, industry: true, verificationStatus: true, jobPostingQuota: true, resumeViewQuota: true }
         }
       }
     });
