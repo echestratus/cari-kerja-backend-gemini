@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, IsNumber, IsOptional, IsEnum, Min, IsArray, ArrayMinSize, ArrayMaxSize } from 'class-validator';
+import { IsString, IsNotEmpty, IsNumber, IsOptional, IsEnum, Min, IsArray, ArrayMinSize, ArrayMaxSize, IsInt } from 'class-validator';
 import { EmploymentType, VacancyStatus } from '@prisma/client';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
@@ -15,10 +15,15 @@ export class CreateVacancyDto {
   @IsNotEmpty()
   title: string;
 
-  @ApiProperty({ example: 1, description: 'Location ID referencing the lookup table' })
-  @IsNumber()
+  @ApiProperty({ example: 1, description: 'City ID referencing the lookup table' })
+  @IsInt()
   @IsNotEmpty()
-  locationId: number;
+  cityId: number;
+
+  @ApiPropertyOptional({ example: 'USD', description: 'Currency Code for the Salary' })
+  @IsString()
+  @IsOptional()
+  salaryCurrency?: string;
 
   @ApiProperty({ example: 'We are looking for a Node.js expert...', description: 'Job Description' })
   @IsString()
