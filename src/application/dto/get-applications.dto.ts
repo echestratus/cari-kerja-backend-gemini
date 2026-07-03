@@ -1,0 +1,35 @@
+import { IsOptional, IsString, IsInt, Min, IsEnum } from 'class-validator';
+import { Type } from 'class-transformer';
+import { ApplicationStatus } from '@prisma/client';
+import { ApiPropertyOptional } from '@nestjs/swagger';
+
+export class GetApplicationsDto {
+  @ApiPropertyOptional({ description: 'Page number', default: 1 })
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  page?: number = 1;
+
+  @ApiPropertyOptional({ description: 'Number of items per page', default: 10 })
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  limit?: number = 10;
+
+  @ApiPropertyOptional({ description: 'Search query for candidate cover letter or vacancy title' })
+  @IsOptional()
+  @IsString()
+  search?: string;
+
+  @ApiPropertyOptional({ description: 'Filter by specific vacancy ID (useful for Employers)' })
+  @IsOptional()
+  @IsString()
+  vacancyId?: string;
+
+  @ApiPropertyOptional({ description: 'Filter by application status', enum: ApplicationStatus })
+  @IsOptional()
+  @IsEnum(ApplicationStatus)
+  status?: ApplicationStatus;
+}
