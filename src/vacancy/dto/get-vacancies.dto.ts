@@ -23,13 +23,13 @@ export class GetVacanciesDto {
   @IsString()
   search?: string;
 
-  @ApiPropertyOptional({ description: 'Filter by City ID', example: 1 })
+  @ApiPropertyOptional({ description: 'Filter by city ID' })
   @IsOptional()
   @Type(() => Number)
   @IsInt()
   cityId?: number;
 
-  @ApiPropertyOptional({ description: 'Filter by Country ID', example: 1 })
+  @ApiPropertyOptional({ description: 'Filter by country ID' })
   @IsOptional()
   @Type(() => Number)
   @IsInt()

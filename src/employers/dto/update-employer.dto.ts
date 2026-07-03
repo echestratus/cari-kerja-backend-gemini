@@ -32,7 +32,7 @@ export class UpdateEmployerDto {
   @IsOptional()
   address?: string;
 
-  @ApiPropertyOptional({ example: 1, description: 'City ID referencing the lookup table' })
+  @ApiPropertyOptional({ example: 1, description: 'City ID' })
   @IsInt()
   @IsOptional()
   cityId?: number;

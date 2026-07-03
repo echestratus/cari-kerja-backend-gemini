@@ -68,7 +68,9 @@ export class VacancyService {
     }
 
     if (countryId) {
-      where.city = { countryId: countryId };
+      where.city = {
+        countryId: countryId
+      };
     }
 
     if (employmentType && employmentType.length > 0) {

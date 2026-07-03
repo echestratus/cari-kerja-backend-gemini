@@ -23,6 +23,8 @@ import { IndustryModule } from './industry/industry.module';
 import { EmployersModule } from './employers/employers.module';
 import { JobSeekersModule } from './job-seekers/job-seekers.module';
 import { SkillsModule } from './skills/skills.module';
+import { CountryModule } from './country/country.module';
+import { CityModule } from './city/city.module';
 
 @Module({
   imports: [
@@ -56,6 +58,8 @@ import { SkillsModule } from './skills/skills.module';
       rootPath: join(__dirname, '..', 'uploads'),
       serveRoot: '/uploads',
     }),
+    CountryModule,
+    CityModule,
   ],
   controllers: [AppController],
   providers: [AppService],

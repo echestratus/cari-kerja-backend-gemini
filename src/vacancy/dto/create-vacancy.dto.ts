@@ -15,15 +15,10 @@ export class CreateVacancyDto {
   @IsNotEmpty()
   title: string;
 
-  @ApiProperty({ example: 1, description: 'City ID referencing the lookup table' })
+  @ApiProperty({ example: 1, description: 'City ID' })
   @IsInt()
   @IsNotEmpty()
   cityId: number;
-
-  @ApiPropertyOptional({ example: 'USD', description: 'Currency Code for the Salary' })
-  @IsString()
-  @IsOptional()
-  salaryCurrency?: string;
 
   @ApiProperty({ example: 'We are looking for a Node.js expert...', description: 'Job Description' })
   @IsString()
@@ -41,11 +36,16 @@ export class CreateVacancyDto {
   @Min(0)
   salaryMin?: number;
 
-  @ApiPropertyOptional({ example: 15000000, description: 'Maximum Salary' })
-  @IsNumber()
+  @ApiPropertyOptional({ example: 15000000, description: 'Maximum salary' })
   @IsOptional()
+  @IsNumber()
   @Min(0)
   salaryMax?: number;
+
+  @ApiPropertyOptional({ example: 'IDR', description: 'Salary currency (e.g. IDR, USD)' })
+  @IsOptional()
+  @IsString()
+  salaryCurrency?: string;
 
   @ApiProperty({ enum: EmploymentType, example: 'FULL_TIME', description: 'Employment Type' })
   @IsEnum(EmploymentType)
