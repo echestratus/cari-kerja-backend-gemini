@@ -285,6 +285,7 @@ model JobVacancy {
   salaryMin      Decimal?       @map("salary_min") @db.Decimal(15, 2)
   salaryMax      Decimal?       @map("salary_max") @db.Decimal(15, 2)
   salaryCurrency String?        @map("salary_currency") @db.VarChar(3)
+  isSalaryVisible Boolean       @default(true) @map("is_salary_visible")
   employmentType EmploymentType @map("employment_type")
   status         VacancyStatus  @default(DRAFT)
   isPremium      Boolean        @default(false) @map("is_premium")
