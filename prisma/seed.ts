@@ -294,6 +294,13 @@ async function main() {
         subCategories: {
           connect: [{ id: randomSubCat.id }]
         },
+        skills: {
+          connect: [
+            { id: allSkills[i % allSkills.length].id },
+            { id: allSkills[(i + 1) % allSkills.length].id },
+            { id: allSkills[(i + 2) % allSkills.length].id }
+          ]
+        },
         title: `${['Senior', 'Junior', 'Lead', 'Staff'][i % 4]} ${randomSubCat.name} Engineer ${i}`,
         cityId: randomCity.id,
         description: `We are looking for a highly skilled individual to join our team. Role #${i}.`,
