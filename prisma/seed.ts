@@ -205,6 +205,7 @@ async function main() {
             avatarUrl: `https://api.dicebear.com/7.x/avataaars/svg?seed=Seeker${i}&backgroundColor=b6e3f4`,
             cityId: allCities[i % allCities.length].id,
             address: `Jl. Sudirman No. ${i}, Blok A`,
+            summary: `Highly motivated professional with a strong track record in ${['technology', 'business', 'creative arts', 'customer service'][i % 4]}. Eager to leverage my skills to contribute to a forward-thinking team. Dedicated to continuous learning and achieving excellence in every project.`,
             dateOfBirth: new Date(1990 + (i % 15), i % 12, (i % 28) + 1),
             gender: i % 2 === 0 ? Gender.MALE : Gender.FEMALE,
             portfolioUrl: i % 3 === 0 ? `https://portfolio.com/${fullName.replace(/ /g, '').toLowerCase()}` : null,
