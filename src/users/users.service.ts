@@ -27,7 +27,7 @@ export class UsersService {
             fullName: true, phone: true, avatarUrl: true, address: true, city: { include: { country: true } },
             dateOfBirth: true, gender: true, portfolioUrl: true, linkedInUrl: true,
             willingToRelocate: true, maritalStatus: true, taxId: true, dependents: true,
-            nationality: true,
+            nationality: true, summary: true,
             skills: true,
             experiences: true,
             educations: true,
