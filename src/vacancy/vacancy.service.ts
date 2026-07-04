@@ -26,7 +26,7 @@ export class VacancyService {
       throw new ForbiddenException('Employer account must be verified to post jobs.');
     }
 
-    const { subCategoryIds, ...restDto } = createVacancyDto;
+    const { subCategoryIds, skillIds, ...restDto } = createVacancyDto;
     const vacancy = await this.prisma.$transaction(async (tx) => {
       return tx.jobVacancy.create({
         data: {
@@ -34,7 +34,10 @@ export class VacancyService {
           employerId: employer.id,
           subCategories: {
             connect: subCategoryIds.map(id => ({ id }))
-          }
+          },
+          skills: skillIds ? {
+            connect: skillIds.map(id => ({ id }))
+          } : undefined
         },
       });
     });
@@ -44,7 +47,7 @@ export class VacancyService {
   }
 
   async findAll(query: GetVacanciesDto) {
-    const { page = 1, limit = 10, search, cityId, countryId, subCategoryIds, employmentType, status, isPremium, sortBy = 'createdAt', sortOrder = 'desc' } = query;
+    const { page = 1, limit = 10, search, cityId, countryId, subCategoryIds, skillIds, employmentType, status, isPremium, sortBy = 'createdAt', sortOrder = 'desc' } = query;
     const skip = (page - 1) * limit;
 
     const where: Prisma.JobVacancyWhereInput = {};
@@ -59,6 +62,14 @@ export class VacancyService {
       where.subCategories = {
         some: {
           id: { in: subCategoryIds }
+        }
+      };
+    }
+
+    if (skillIds && skillIds.length > 0) {
+      where.skills = {
+        some: {
+          id: { in: skillIds }
         }
       };
     }
@@ -109,6 +120,9 @@ export class VacancyService {
           subCategories: {
             select: { id: true, name: true, categoryId: true }
           },
+          skills: {
+            select: { id: true, name: true, normalizedName: true }
+          },
           city: { include: { country: true } }
         }
       }),
@@ -128,7 +142,7 @@ export class VacancyService {
   async findOne(id: string) {
     const vacancy = await this.prisma.jobVacancy.findUnique({
       where: { id },
-      include: { employer: true, subCategories: true, city: { include: { country: true } } }
+      include: { employer: true, subCategories: true, skills: true, city: { include: { country: true } } }
     });
 
     if (!vacancy) throw new NotFoundException('Vacancy not found');
@@ -146,12 +160,18 @@ export class VacancyService {
       throw new ForbiddenException('You can only update your own vacancies');
     }
 
-    const { subCategoryIds, ...restUpdate } = updateVacancyDto;
+    const { subCategoryIds, skillIds, ...restUpdate } = updateVacancyDto;
     const updateData: Prisma.JobVacancyUpdateInput = { ...restUpdate };
     
     if (subCategoryIds) {
       updateData.subCategories = {
         set: subCategoryIds.map(id => ({ id }))
+      };
+    }
+
+    if (skillIds) {
+      updateData.skills = {
+        set: skillIds.map(id => ({ id }))
       };
     }
 

@@ -1,4 +1,4 @@
-import { IsOptional, IsString, IsInt, Min, IsEnum, IsIn, IsBoolean } from 'class-validator';
+import { IsOptional, IsString, IsInt, Min, IsEnum, IsIn, IsBoolean, IsArray, IsNumber } from 'class-validator';
 import { Type, Transform } from 'class-transformer';
 import { EmploymentType, VacancyStatus } from '@prisma/client';
 import { ApiPropertyOptional } from '@nestjs/swagger';
@@ -37,9 +37,25 @@ export class GetVacanciesDto {
 
   @ApiPropertyOptional({ description: 'Filter by sub category IDs', isArray: true })
   @IsOptional()
-  @Transform(({ value }) => (Array.isArray(value) ? value.map(Number) : value.split(',').map(Number)))
-  @IsInt({ each: true })
+  @Transform(({ value }) => {
+    if (!value) return undefined;
+    const arr = Array.isArray(value) ? value : value.split(',');
+    return arr.map(Number);
+  })
+  @IsArray()
+  @IsNumber({}, { each: true })
   subCategoryIds?: number[];
+
+  @ApiPropertyOptional({ description: 'Filter by skill IDs', isArray: true })
+  @IsOptional()
+  @Transform(({ value }) => {
+    if (!value) return undefined;
+    const arr = Array.isArray(value) ? value : value.split(',');
+    return arr.map(Number);
+  })
+  @IsArray()
+  @IsNumber({}, { each: true })
+  skillIds?: number[];
 
   @ApiPropertyOptional({ description: 'Filter by employment type', enum: EmploymentType, isArray: true })
   @IsOptional()
