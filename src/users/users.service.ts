@@ -33,7 +33,13 @@ export class UsersService {
             educations: true,
             certificates: true,
             resumes: {
-              include: { subCategories: true }
+              include: { 
+                subCategories: true,
+                skills: true,
+                experiences: true,
+                educations: true,
+                certificates: true
+              }
             }
           }
         },
