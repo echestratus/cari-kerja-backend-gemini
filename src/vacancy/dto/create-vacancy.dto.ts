@@ -10,6 +10,12 @@ export class CreateVacancyDto {
   @ArrayMaxSize(3)
   subCategoryIds: number[];
 
+  @ApiPropertyOptional({ example: [1, 2], description: 'Array of Skill IDs' })
+  @IsArray()
+  @IsNumber({}, { each: true })
+  @IsOptional()
+  skillIds?: number[];
+
   @ApiProperty({ example: 'Senior Backend Engineer', description: 'Job Title' })
   @IsString()
   @IsNotEmpty()
