@@ -25,7 +25,13 @@ export class JobSeekersService {
         user: { select: { email: true } },
         resumes: {
           where: { isSearchable: true },
-          include: { subCategories: true }
+          include: { 
+            subCategories: true,
+            experiences: true,
+            educations: true,
+            skills: true,
+            certificates: true
+          }
         }
       }
     });
