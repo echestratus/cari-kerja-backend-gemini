@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, IsNumber, IsOptional, IsEnum, Min, IsArray, ArrayMinSize, ArrayMaxSize, IsInt } from 'class-validator';
+import { IsString, IsNotEmpty, IsNumber, IsOptional, IsEnum, Min, IsArray, ArrayMinSize, ArrayMaxSize, IsInt, IsBoolean } from 'class-validator';
 import { EmploymentType, VacancyStatus } from '@prisma/client';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
@@ -46,6 +46,11 @@ export class CreateVacancyDto {
   @IsOptional()
   @IsString()
   salaryCurrency?: string;
+
+  @ApiPropertyOptional({ example: true, description: 'Whether the salary is visible to job seekers' })
+  @IsOptional()
+  @IsBoolean()
+  isSalaryVisible?: boolean;
 
   @ApiProperty({ enum: EmploymentType, example: 'FULL_TIME', description: 'Employment Type' })
   @IsEnum(EmploymentType)
